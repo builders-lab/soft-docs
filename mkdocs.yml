@@ -1,4 +1,4 @@
-site_name: soft-docs
+site_name: Soft docs
 nav:
   - Home: index.md
   - About: about.md
