@@ -2,4 +2,4 @@ site_name: Soft docs
 nav:
   - Home: index.md
   - About: about.md
-  - Status: status.md
+  - Status: analysis.md
