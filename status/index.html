@@ -1,0 +1,1199 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://builders-lab.github.io/soft-cuda/status/">
+      
+      
+        <link rel="prev" href="../analysis/">
+      
+      
+        <link rel="next" href="../architecture/design/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Status - soft-cuda docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CJetBrains+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"JetBrains Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#tensor-runtime-soft-architecture-decisions-current" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="soft-cuda docs" class="md-header__button md-logo" aria-label="soft-cuda docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            soft-cuda docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Status
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/builders-lab/soft-cuda" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    builders-lab/soft-cuda
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../about/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../analysis/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Analysis
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Status
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../architecture/design/" class="md-tabs__link">
+          
+  
+  
+  Architecture
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="soft-cuda docs" class="md-nav__button md-logo" aria-label="soft-cuda docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    soft-cuda docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/builders-lab/soft-cuda" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    builders-lab/soft-cuda
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../analysis/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Status
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-core-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Core Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-opaque-tensor-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Opaque Tensor Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-memory-model-tensor-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Memory Model – Tensor Pool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-explicit-output-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Explicit Output Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tensor-device-awareness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tensor Device Awareness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-device-mismatch-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Device Mismatch Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-hardware-profiling-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Hardware Profiling Runtime
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-offline-autotuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Offline Autotuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-future-hardware-profile-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Future Hardware Profile Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-tensor-shape-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Tensor Shape Representation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-autograd-system-planned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Autograd System (Planned)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-optimizer-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Optimizer Interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-activation-and-loss-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Activation and Loss Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-project-organization-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Project Organization Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-feature-deferral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Feature Deferral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overall-architecture-vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overall Architecture Vision
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-core-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Core Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-opaque-tensor-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Opaque Tensor Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-memory-model-tensor-pool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Memory Model – Tensor Pool
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-explicit-output-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Explicit Output Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-tensor-device-awareness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Tensor Device Awareness
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-device-mismatch-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Device Mismatch Policy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-hardware-profiling-runtime" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Hardware Profiling Runtime
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-offline-autotuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Offline Autotuning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-future-hardware-profile-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Future Hardware Profile Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-tensor-shape-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Tensor Shape Representation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-autograd-system-planned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Autograd System (Planned)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#12-optimizer-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12. Optimizer Interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#13-activation-and-loss-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13. Activation and Loss Operations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#14-project-organization-decisions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14. Project Organization Decisions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#15-feature-deferral" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        15. Feature Deferral
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overall-architecture-vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overall Architecture Vision
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="tensor-runtime-soft-architecture-decisions-current">Tensor Runtime (Soft) – Architecture Decisions (Current)</h1>
+<h2 id="1-core-philosophy">1. Core Philosophy</h2>
+<p>The library is designed as a research-oriented tensor runtime, prioritizing:
+* Performance
+* Explicit control
+* Predictable execution</p>
+<p>It is <strong>not</strong> a convenience framework. </p>
+<p><strong>Key principle:</strong> <code>clarity &gt; flexibility</code>
+Because of this, some “nice” behaviors (such as implicit device copies) are intentionally disallowed.</p>
+<hr />
+<h2 id="2-opaque-tensor-architecture">2. Opaque Tensor Architecture</h2>
+<p>The public API exposes opaque types. </p>
+<p><strong>Core Concepts:</strong>
+* <code>tensor_t</code>
+* <code>tensor_pool_t</code>
+* <code>tensor_graph_t</code></p>
+<p>Users cannot access the internal structure. </p>
+<p><strong>Benefits:</strong>
+* Stable public API
+* Internal layout can evolve freely
+* Backend implementations can change without breaking user code</p>
+<blockquote>
+<p><strong>Note:</strong> This is a common pattern used in systems like the PyTorch tensor abstraction and TensorFlow tensor handles.</p>
+</blockquote>
+<hr />
+<h2 id="3-memory-model-tensor-pool">3. Memory Model – Tensor Pool</h2>
+<p>Tensors are allocated from a memory pool.</p>
+<p><strong>Concept Flow:</strong>
+<code>tensor_pool</code> → <code>tensor allocations</code></p>
+<p><strong>Initial Implementation:</strong> Bump allocator
+* Fast allocation
+* No fragmentation
+* Simple implementation</p>
+<p><em>The free operation is currently a placeholder and not yet implemented.</em></p>
+<hr />
+<h2 id="4-explicit-output-operations">4. Explicit Output Operations</h2>
+<p>Operations follow a pre-allocated output pattern.</p>
+<p><strong>Example Concept:</strong>
+<code>tensor_op(out, a, b)</code> <em>(Instead of: <code>return new_tensor</code>)</em></p>
+<p><strong>Advantages:</strong>
+* Avoids heap allocations
+* Reuses memory
+* Predictable performance</p>
+<blockquote>
+<p><strong>Note:</strong> Inspired by HPC libraries such as BLAS and cuBLAS.</p>
+</blockquote>
+<hr />
+<h2 id="5-tensor-device-awareness">5. Tensor Device Awareness</h2>
+<p>Each tensor knows the device it resides on (CPU or GPU).</p>
+<p><strong>Future Goal:</strong> The tensor runtime decides the optimal execution device based on:
+* Operation cost
+* Tensor size
+* Hardware latency</p>
+<p><em>A dynamic scheduling system is planned but currently postponed.</em></p>
+<hr />
+<h2 id="6-device-mismatch-policy">6. Device Mismatch Policy</h2>
+<p><strong>Strict device coherence rule:</strong> <code>device(x) == device(y) == device(out)</code></p>
+<p>If a mismatch occurs, it results in a <strong>runtime fault</strong>. There is no implicit data transfer.</p>
+<p><strong>Reasoning:</strong>
+* Predictable performance
+* Simpler runtime
+* Research clarity</p>
+<hr />
+<h2 id="7-hardware-profiling-runtime">7. Hardware Profiling Runtime</h2>
+<p>The library includes a small runtime profiler.</p>
+<p><strong>First Execution Flow:</strong>
+1. Run microbenchmarks
+2. Measure CPU/GPU latency
+3. Generate <code>CONFIG.soft</code></p>
+<p>The <code>CONFIG.soft</code> file stores hardware characteristics, operation performance data, and device selection heuristics.</p>
+<p><strong>Runtime Behavior:</strong>
+* <strong>If</strong> <code>CONFIG.soft</code> exists → load profile
+* <strong>Else</strong> → run profiler</p>
+<hr />
+<h2 id="8-offline-autotuning">8. Offline Autotuning</h2>
+<p>The profiling system determines optimal execution based on tensor size, operation type, and hardware characteristics.</p>
+<p><strong>Example Concept:</strong>
+* Small ops → CPU
+* Large ops → GPU</p>
+<p>This information is securely stored in <code>CONFIG.soft</code>.</p>
+<hr />
+<h2 id="9-future-hardware-profile-database">9. Future Hardware Profile Database</h2>
+<p><strong>Possible Future Improvement:</strong> Embed known hardware profiles.</p>
+<p><strong>Concept:</strong> <code>device signature → configuration</code>
+<em>(Example: GPU model + CPU model → scheduling config)</em></p>
+<p>This allows the system to skip profiling on known hardware.</p>
+<hr />
+<h2 id="10-tensor-shape-representation">10. Tensor Shape Representation</h2>
+<p><strong>Current Design:</strong> <code>uint32_t* dims</code></p>
+<p>The shape is stored as a sentinel-terminated array.
+* <strong>Example:</strong> <code>[3, 4, 5, 0]</code>
+* <strong>Max dimensions defined as:</strong> <code>TENSOR_MAX_DIMS = 8</code></p>
+<hr />
+<h2 id="11-autograd-system-planned">11. Autograd System (Planned)</h2>
+<p>The autograd system is not yet stabilized.</p>
+<p><strong>Planned Design:</strong>
+* Tensor operations build a computation graph.
+* Loss tensor triggers the backward pass.</p>
+<p><strong>Backward Entry Point:</strong> <code>tensor_backward(loss_tensor)</code>
+<strong>Graph Structure Representation:</strong> <code>tensor_graph_t</code></p>
+<hr />
+<h2 id="12-optimizer-interface">12. Optimizer Interface</h2>
+<p><strong>Initial Optimizer Template:</strong> SGD</p>
+<p><strong>Example Concept:</strong> <code>tensor_sgd_template(parameters, learning_rate)</code></p>
+<p>Future optimizers are expected to seamlessly plug into this same structure.</p>
+<hr />
+<h2 id="13-activation-and-loss-operations">13. Activation and Loss Operations</h2>
+<p>Initial built-in operations form a minimal core set for neural network experimentation:
+* Matrix multiplication
+* Transpose
+* Addition
+* Scalar multiplication
+* ReLU activation
+* MSE loss</p>
+<hr />
+<h2 id="14-project-organization-decisions">14. Project Organization Decisions</h2>
+<p>Team responsibilities have been clearly separated for this operation.</p>
+<p><strong>Subsystem Ownership:</strong></p>
+<ul>
+<li>
+<p><strong>Mathematical Engine:</strong> Aakarsh + Zoya</p>
+</li>
+<li>
+<p><strong>Neural/Data Pipeline:</strong> Vishal</p>
+</li>
+<li>
+<p><strong>QA / Testing / CI:</strong> Anmol</p>
+</li>
+<li>
+<p><strong>CPython API Integration:</strong> Aadya <em>(pending)</em></p>
+</li>
+</ul>
+<p><em>Frontend and documentation operations are postponed until the backend architecture stabilizes.</em></p>
+<hr />
+<h2 id="15-feature-deferral">15. Feature Deferral</h2>
+<p>The dynamic compute switching system has been postponed.</p>
+<p><strong>Reason:</strong> To avoid premature optimization and maintain focus on securing the core tensor engine first.</p>
+<hr />
+<h2 id="overall-architecture-vision">Overall Architecture Vision</h2>
+<p>The system aims to become:
+<code>Small tensor runtime</code> + <code>Explicit memory control</code> + <code>Hardware-aware execution</code> + <code>Basic autograd</code></p>
+<p><strong>Mission Objective:</strong> A minimal deep-learning execution engine, designed strictly for experimentation rather than end-user convenience.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
