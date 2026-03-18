@@ -1,5 +1,39 @@
-site_name: Soft docs
+site_name: soft-cuda docs
+site_url: https://builders-lab.github.io/soft-cuda
+repo_url: https://github.com/builders-lab/soft-cuda
+repo_name: builders-lab/soft-cuda
+
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Dark mode
+  font:
+    code: JetBrains Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - tables
+  - attr_list
+
 nav:
   - Home: index.md
   - About: about.md
-  - Status: analysis.md
+  - Analysis: analysis.md
+  - Status: status.md
+  - Architecture:
+      - Design: architecture/design.md
