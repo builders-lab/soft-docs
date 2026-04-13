@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/about/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/analysis/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/future/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/status/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+    <url>
+         <loc>https://builders-lab.github.io/soft-cuda/architecture/design/</loc>
+         <lastmod>2026-04-13</lastmod>
+    </url>
+</urlset>
