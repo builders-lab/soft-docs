@@ -35,5 +35,6 @@ nav:
   - About: about.md
   - Analysis: analysis.md
   - Status: status.md
+  - Future: future.md
   - Architecture:
       - Design: architecture/design.md
